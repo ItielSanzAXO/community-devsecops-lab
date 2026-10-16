@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: 03-security/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r 03-security/requirements.txt
+
+      - name: Validate Python syntax
+        run: python -m compileall -q 01-copilot 03-security tests
+
+      - name: Run tests
+        run: pytest tests -v
+
+      - name: Pipeline summary
+        if: always()
+        run: |
+          echo "### Resultado del pipeline" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Python: ${{ matrix.python-version }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Estado: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"

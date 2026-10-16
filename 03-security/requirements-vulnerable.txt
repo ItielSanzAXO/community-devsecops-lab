@@ -1,6 +1,6 @@
 # ⚠️ SOLO DIDÁCTICO: versiones antiguas con CVEs conocidos. NO instalar en producción ni en CI.
 # Sirve para que Dependabot / `pip-audit` generen alertas durante el laboratorio.
 Flask==0.12.2
-requests==2.19.0
+requests==2.34.2
 PyYAML==3.13
 Jinja2==2.10
